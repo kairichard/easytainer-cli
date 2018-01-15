@@ -13,7 +13,6 @@ class EndpointAPI(object):
         self.default_headers = {"X-PA-AUTH-TOKEN": auth}
 
     def post(self, data, **kwargs):
-        import pudb; pudb.set_trace()  # XXX BREAKPOINT
         return self.client.post(self.url, data=data, headers=self.get_headers(**kwargs))
 
     def delete(self, name, **kwargs):
