@@ -49,9 +49,11 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertTrue(m.called)
 
-    def test_create_with_env(self, m):
+    @patch("endpoint.cli.requests.post", wraps=cli.requests.post)
+    def test_create_with_env(self, m, r):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
         result = self.invoke("create", "ubuntu", "-e TEST=True", "-e DEBUG=False")
+        r.assert_called_with('http://mock.mock/endpoints', data={'image': 'ubuntu', 'env': '{"DEBUG": "False", "TEST": "True"}'}, headers={'X-PA-AUTH-TOKEN': '123'})
         self.assertIn("Will be deployed at http://", result.output)
 
     @patch("endpoint.cli.EndpointAPI", wraps=cli.EndpointAPI)

@@ -1,4 +1,5 @@
 import sys
+import json
 import click
 import requests
 import os
@@ -39,7 +40,8 @@ def hw():
 @click.argument('image')
 def create(**kwargs):
     api = EndpointAPI(requests, kwargs.get("auth_token"))
-    data = dict(image=kwargs.get("image"), env="{}")
+    env = dict(e.strip().split("=") for e in kwargs.get("env", ()))
+    data = dict(image=kwargs.get("image"), env=json.dumps(env, sort_keys=True))
     response = api.post(data=data)
     if response.status_code == 401:
         print("Authentication Failed")
