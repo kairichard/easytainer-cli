@@ -5,6 +5,7 @@ import os
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
+
 class EndpointAPI(object):
     def __init__(self, client, auth):
         self.url = "http://{}/{}".format(os.environ.get("HW_API"), "endpoints")
@@ -23,6 +24,7 @@ class EndpointAPI(object):
         defaults = self.default_headers.copy()
         defaults.update(headers)
         return defaults
+
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option(version='0.0.1')
@@ -43,7 +45,8 @@ def create(**kwargs):
     if response.status_code == 429:
         print("No more endpoints left")
     if response.status_code == 200:
-        print("Will be deployed at http://{}.run.{}".format(response.json()["runner-name"], os.environ.get("HW_API")))
+        print("Will be deployed at http://{}.run.{}".format(response.json()
+                                                            ["runner-name"], os.environ.get("HW_API")))
         print("Give it some time to pull your image")
     if response.status_code != 200:
         sys.exit(1)
@@ -55,6 +58,7 @@ def create(**kwargs):
 def remove(**kwargs):
     api = EndpointAPI(requests, kwargs.get("auth_token"))
     respone = api.delete(kwargs.get("endpoint_name"))
+
 
 if __name__ == '__main__':
     hw()
