@@ -1,10 +1,10 @@
 import os
-import requests
-from endpoint import cli
-import click
-from click.testing import CliRunner
-import requests_mock
 import unittest
+
+import click
+import requests
+import requests_mock
+from click.testing import CliRunner
 from mock import patch
 
 
