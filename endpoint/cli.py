@@ -5,6 +5,8 @@ import os
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
+if "HW_API" not in os.environ:
+    os.environ["HW_API"] = "hallowhale.io"
 
 class EndpointAPI(object):
     def __init__(self, client, auth):
