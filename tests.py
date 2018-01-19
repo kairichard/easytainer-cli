@@ -39,8 +39,7 @@ class CliTestCase(unittest.TestCase):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
         result = self.invoke("create", "ubuntu")
         self.assertEqual(result.exit_code, 0)
-        self.assertIn("Will be deployed at http://something.run.mock.mock", result.output)
-        self.assertIn("Give it some time to pull your image", result.output)
+        self.assertIn("http://something.run.mock.mock", result.output)
         self.assertTrue(m.called)
 
     def test_delete(self, m):
@@ -54,7 +53,7 @@ class CliTestCase(unittest.TestCase):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
         result = self.invoke("create", "ubuntu", "-e TEST=True", "-e DEBUG=False")
         r.assert_called_with('http://mock.mock/endpoints', data={'image': 'ubuntu', 'env': '{"DEBUG": "False", "TEST": "True"}'}, headers={'X-PA-AUTH-TOKEN': '123'})
-        self.assertIn("Will be deployed at http://", result.output)
+        self.assertIn("http://something.run.mock.mock", result.output)
 
     @patch("endpoint.cli.EndpointAPI", wraps=cli.EndpointAPI)
     def test_create_uses_auth_token(self, m, e):

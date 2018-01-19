@@ -6,6 +6,9 @@ import os
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
+class EndPointError(Exception):
+    pass
+
 if "HW_API" not in os.environ:
     os.environ["HW_API"] = "hallowhale.io"
 
@@ -27,41 +30,56 @@ class EndpointAPI(object):
         defaults.update(headers)
         return defaults
 
+auth = click.option('--auth-token', envvar="AUTH_TOKEN", default="NONE", help="Authentication token to access your account")
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.version_option(version='0.0.1')
 def hw():
+    """
+    <NAME> - Run containers as a Funtion - CaaF
+    """
     pass
 
 
 @hw.command()
-@click.option('--env', '-e', multiple=True)
-@click.option('--auth-token', envvar="AUTH_TOKEN", default="NONE")
-@click.argument('image')
+@auth
+@click.option('--env', '-e', multiple=True, help="Environment variables passed to the container - multiple values possible")
+@click.argument('image')#, help="An Image hosted on hub.docker.com")
 def create(**kwargs):
+    """ Create a new endpoint with <IMAGE> from hub.docker.com"""
     api = EndpointAPI(requests, kwargs.get("auth_token"))
     env = dict(e.strip().split("=") for e in kwargs.get("env", ()))
     data = dict(image=kwargs.get("image"), env=json.dumps(env, sort_keys=True))
     response = api.post(data=data)
     if response.status_code == 401:
-        print("Authentication Failed")
+        click.secho('Warning: Authentication Failed', fg="yellow")
+        exit(1)
+
     if response.status_code == 429:
-        print("No more endpoints left")
+        click.secho('Warning: No more endpoints left - either remove or get more by contacting me', fg="yellow")
+        exit(1)
+
     if response.status_code == 200:
-        print("Will be deployed at http://{}.run.{}".format(response.json()
-                                                            ["runner-name"], os.environ.get("HW_API")))
-        print("Give it some time to pull your image")
+        url = "http://{}.run.{}".format(response.json()["runner-name"], os.environ.get("HW_API"))
+        click.secho('Success: Container will be available shortly', bold=True, fg="green")
+        click.secho('{}'.format(url))
+
     if response.status_code != 200:
-        sys.exit(1)
+        raise EndPointError()
 
 
 @hw.command()
-@click.option('--auth-token', envvar="AUTH_TOKEN", default="NONE")
-@click.argument('endpoint-name')
+@auth
+@click.argument('name')#, help="The name of your endpoint")
 def remove(**kwargs):
+    """ Permanently remove an endpoint by <NAME>"""
     api = EndpointAPI(requests, kwargs.get("auth_token"))
-    respone = api.delete(kwargs.get("endpoint_name"))
+    respone = api.delete(kwargs.get("name"))
 
 
 if __name__ == '__main__':
-    hw()
+    try:
+        hw()
+    except (requests.exceptions.ConnectionError, EndPointError):
+        click.secho('Error: Cannot communicate with API', err=True, bold=True, fg="red")
+        exit(1)
