@@ -17,7 +17,6 @@ linting:
 py27_tests:
   <<: *tox_environment
   stage: tests
-  image: python:2.7
   script: tox -e py27
 
 py33_tests:
@@ -32,13 +31,11 @@ py34_tests:
 
 py35_tests:
   <<: *tox_environment
-  image: python:3.5
   stage: tests
   script: tox -e py35
 
 py36_tests:
   <<: *tox_environment
-  image: python:3.6
   stage: tests
   script: tox -e py36
 
