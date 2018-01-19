@@ -5,7 +5,11 @@ import click
 import requests
 import requests_mock
 from click.testing import CliRunner
-from mock import patch
+try:
+    from mock import patch
+except ImportError:
+    from unittest.mock import patch
+
 
 from endpoint import cli
 
