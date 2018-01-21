@@ -49,4 +49,6 @@ install:
 
 deploy:
   stage: deploy
-  script: python setup.py upload
+  script:
+    - pip install twine
+    - python setup.py upload
