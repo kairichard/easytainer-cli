@@ -6,7 +6,7 @@ import os
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-class EndPointError(Exception):
+class EndPointError(click.ClickException):
     pass
 
 if "HW_API" not in os.environ:
@@ -19,10 +19,16 @@ class EndpointAPI(object):
         self.default_headers = {"X-PA-AUTH-TOKEN": auth}
 
     def post(self, data, **kwargs):
-        return self.client.post(self.url, data=data, headers=self.get_headers(**kwargs))
+        try:
+            return self.client.post(self.url, data=data, headers=self.get_headers(**kwargs))
+        except requests.exceptions.ConnectionError as exc:
+            raise EndPointError("Unable to communicate with API")
 
     def delete(self, name, **kwargs):
-        return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
+        try:
+            return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
+        except requests.exceptions.ConnectionError as exc:
+            raise EndPointError("Unable to communicate with API")
 
     def get_headers(self, **kwargs):
         headers = kwargs.get("headers", self.default_headers.copy())
@@ -65,7 +71,7 @@ def create(**kwargs):
         click.secho('{}'.format(url))
 
     if response.status_code != 200:
-        raise EndPointError()
+        raise EndPointError("Unable to communicate with API - {}".format(response.status_code))
 
 
 @hw.command()
@@ -78,8 +84,4 @@ def remove(**kwargs):
 
 
 if __name__ == '__main__':
-    try:
-        hw()
-    except (requests.exceptions.ConnectionError, EndPointError):
-        click.secho('Error: Cannot communicate with API', err=True, bold=True, fg="red")
-        exit(1)
+    hw()
