@@ -67,10 +67,10 @@ class UploadCommand(Command):
             pass
 
         self.status('Building Source and Wheel (universal) distribution…')
-        subprocess.check_call('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+        subprocess.check_call('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable), shell=True)
 
         self.status('Uploading the package to PyPi via Twine…')
-        subprocess.check_call('twine upload --repository-url {REPOSITORY_URL} -u {PYPI_USER} -p "{PYPI_PASSWORD}" dist/*'.format(**os.environ))
+        subprocess.check_call('twine upload --repository-url {REPOSITORY_URL} -u {PYPI_USER} -p "{PYPI_PASSWORD}" dist/*'.format(**os.environ), shell=True)
 
         sys.exit()
 
