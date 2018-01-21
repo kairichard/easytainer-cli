@@ -5,6 +5,7 @@
 #   $ pip install twine
 
 import io
+import subprocess
 import os
 import sys
 from shutil import rmtree
@@ -66,10 +67,10 @@ class UploadCommand(Command):
             pass
 
         self.status('Building Source and Wheel (universal) distribution…')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
+        subprocess.check_call('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
 
         self.status('Uploading the package to PyPi via Twine…')
-        os.system('twine upload --repository-url {REPOSITORY_URL} -u {PYPI_USER} -p "{PYPI_PASSWORD}" dist/*'.format(**os.environ))
+        subprocess.check_call('twine upload --repository-url {REPOSITORY_URL} -u {PYPI_USER} -p "{PYPI_PASSWORD}" dist/*'.format(**os.environ))
 
         sys.exit()
 
