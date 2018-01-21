@@ -3,6 +3,7 @@ image: themattrix/tox
 stages:
   - validate
   - tests
+  - integration
   - deploy
 
 .tox_environment: &tox_environment
@@ -39,4 +40,13 @@ py36_tests:
   stage: tests
   script: tox -e py36
 
+install:
+  stage: integration
+  script:
+    - pip install -e .
+    - hw --help
 
+
+deploy:
+  stage: deploy
+  script: python setup.py upload

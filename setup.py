@@ -20,7 +20,7 @@ AUTHOR = 'Kai'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    # 'requests', 'maya', 'records',
+    'requests', 'click',
 ]
 
 # The rest you shouldn't have to touch too much :)
@@ -37,8 +37,8 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # Load the package's __version__.py module as a dictionary.
 about = {}
-# with open(os.path.join(here, NAME, '__version__.py')) as f:
-    # exec(f.read(), about)
+with open(os.path.join(here, "endpoint", '__init__.py')) as f:
+    exec(f.read(), about)
 
 
 class UploadCommand(Command):
@@ -69,7 +69,7 @@ class UploadCommand(Command):
         os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
 
         self.status('Uploading the package to PyPi via Twine…')
-        os.system('twine upload dist/*')
+        os.system('twine upload --repository-url {REPOSITORY_URL} -u {PYPI_USER} -p "{PYPI_PASSWORD}" dist/*'.format(**os.environ))
 
         sys.exit()
 
@@ -77,19 +77,16 @@ class UploadCommand(Command):
 # Where the magic happens:
 setup(
     name=NAME,
-    version='0.0.1', # about['__version__'],
+    version=about['__version__'],
     description=DESCRIPTION,
     long_description="not there yet",
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
     packages=find_packages(exclude=('tests',)),
-    # If your package is a single module, use this instead of 'packages':
-    # py_modules=['mypackage'],
-
-    # entry_points={
-    #     'console_scripts': ['mycli=mymodule:cli'],
-    # },
+	entry_points={
+        'console_scripts': ['hw=endpoint.cli:hw'],
+	},
     install_requires=REQUIRED,
     include_package_data=True,
     license='MIT',
