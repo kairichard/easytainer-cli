@@ -56,12 +56,14 @@ def hw():
 @hw.command()
 @auth
 @click.option('--env', '-e', multiple=True, help="Environment variables passed to the container - multiple values possible")
+@click.option('--command', '-c', help="Set the command to be run with this image")
 @click.argument('image')#, help="An Image hosted on hub.docker.com")
 def create(**kwargs):
     """ Create a new endpoint with <IMAGE> from hub.docker.com"""
     api = EndpointAPI(requests, kwargs.get("auth_token"))
     env = dict(e.strip().split("=") for e in kwargs.get("env", ()))
-    data = dict(image=kwargs.get("image"), env=json.dumps(env, sort_keys=True))
+    cmd = kwargs.get("command") or ""
+    data = dict(image=kwargs.get("image"), env=json.dumps(env, sort_keys=True), command=cmd.strip())
     response = api.post(data=data)
     if response.status_code == 401:
         click.secho('Warning: Authentication Failed', fg="yellow")

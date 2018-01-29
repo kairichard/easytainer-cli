@@ -66,6 +66,13 @@ class CliTestCase(unittest.TestCase):
         r.assert_called_with('http://mock.mock/endpoints', data={'image': 'ubuntu', 'env': '{"DEBUG": "False", "TEST": "True"}'}, headers={'X-PA-AUTH-TOKEN': '123'})
         self.assertIn("http://something.run.mock.mock", result.output)
 
+    @patch("endpoint.cli.requests.post", wraps=cli.requests.post)
+    def test_create_with_env(self, m, r):
+        m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
+        result = self.invoke("create", "ubuntu", "-c bash")
+        r.assert_called_with('http://mock.mock/endpoints', data={'image': 'ubuntu', 'env': '{}', 'command': 'bash'}, headers={'X-PA-AUTH-TOKEN': '123'})
+        self.assertIn("http://something.run.mock.mock", result.output)
+
     @patch("endpoint.cli.EndpointAPI", wraps=cli.EndpointAPI)
     def test_create_uses_auth_token(self, m, e):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
