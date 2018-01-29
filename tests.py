@@ -52,6 +52,13 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertTrue(m.called)
 
+    def test_list(self, m):
+        m.get("http://mock.mock/endpoints", status_code=200, text='{"endpoints": [{"image": "ubuntu", "name": "cake"}]}')
+        result = self.invoke("ls")
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn("cake", result.output)
+        self.assertTrue(m.called)
+
     @patch("endpoint.cli.requests.post", wraps=cli.requests.post)
     def test_create_with_env(self, m, r):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
