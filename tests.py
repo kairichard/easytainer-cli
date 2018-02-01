@@ -54,6 +54,7 @@ class CliTestCase(unittest.TestCase):
 
     def test_list(self, m):
         m.get("http://mock.mock/endpoints", status_code=200, text='{"endpoints": [{"image": "ubuntu", "name": "cake"}]}')
+        m.get("http://mock.mock/endpoints/cake", status_code=200, text='{"status": "ready"}')
         result = self.invoke("ls")
         self.assertEqual(result.exit_code, 0)
         self.assertIn("cake", result.output)

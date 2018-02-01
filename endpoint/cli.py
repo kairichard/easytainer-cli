@@ -30,6 +30,12 @@ class EndpointAPI(object):
         except requests.exceptions.ConnectionError as exc:
             raise EndPointError("Unable to communicate with API")
 
+    def get(self, name, **kwargs):
+        try:
+            return self.client.get("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
+        except requests.exceptions.ConnectionError as exc:
+            raise EndPointError("Unable to communicate with API")
+
     def delete(self, name, **kwargs):
         try:
             return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
@@ -89,7 +95,7 @@ def ls(**kwargs):
     api = EndpointAPI(requests, kwargs.get("auth_token"))
     response = api.list()
     for e in response.json()["endpoints"]:
-        click.secho(e["name"])
+        click.secho("{} is {}".format(e["name"], api.get(e["name"]).json()["status"]))
 
 
 @hw.command()
