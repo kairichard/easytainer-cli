@@ -6,7 +6,7 @@ import os
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-class EndPointError(click.ClickException):
+class EndpointError(click.ClickException):
     pass
 
 if "HW_API" not in os.environ:
@@ -22,25 +22,25 @@ class EndpointAPI(object):
         try:
             return self.client.post(self.url, data=data, headers=self.get_headers(**kwargs))
         except requests.exceptions.ConnectionError as exc:
-            raise EndPointError("Unable to communicate with API")
+            raise EndpointError("Unable to communicate with API")
 
     def list(self, **kwargs):
         try:
             return self.client.get(self.url, headers=self.get_headers(**kwargs))
         except requests.exceptions.ConnectionError as exc:
-            raise EndPointError("Unable to communicate with API")
+            raise EndpointError("Unable to communicate with API")
 
     def get(self, name, **kwargs):
         try:
             return self.client.get("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
         except requests.exceptions.ConnectionError as exc:
-            raise EndPointError("Unable to communicate with API")
+            raise EndpointError("Unable to communicate with API")
 
     def delete(self, name, **kwargs):
         try:
             return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
         except requests.exceptions.ConnectionError as exc:
-            raise EndPointError("Unable to communicate with API")
+            raise EndpointError("Unable to communicate with API")
 
     def get_headers(self, **kwargs):
         headers = kwargs.get("headers", self.default_headers.copy())
