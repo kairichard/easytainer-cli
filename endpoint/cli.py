@@ -112,7 +112,9 @@ def ls(**kwargs):
 def remove(**kwargs):
     """ Permanently remove an endpoint by <NAME>"""
     api = EndpointAPI(requests, kwargs.get("auth_token"))
-    respone = api.delete(kwargs.get("name"))
+    name = kwargs.get("name")
+    respone = api.delete(name)
+    click.secho("{} will be deleted".format(name))
 
 
 if __name__ == '__main__':

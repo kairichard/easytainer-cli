@@ -50,6 +50,7 @@ class CliTestCase(unittest.TestCase):
         m.delete("http://mock.mock/endpoints/ice-cream", status_code=200)
         result = self.invoke("remove", "ice-cream")
         self.assertEqual(result.exit_code, 0)
+        self.assertIn("ice-cream will be deleted", result.output)
         self.assertTrue(m.called)
 
     def test_list_ready(self, m):
