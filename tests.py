@@ -53,6 +53,13 @@ class CliTestCase(unittest.TestCase):
         self.assertIn("ice-cream will be deleted", result.output)
         self.assertTrue(m.called)
 
+    def test_delete_non_existant_endpoint(self, m):
+        m.delete("http://mock.mock/endpoints/ice-cream", status_code=404)
+        result = self.invoke("remove", "ice-cream")
+        self.assertEqual(result.exit_code, 1)
+        self.assertIn("Warning: Resource not found", result.output)
+        self.assertTrue(m.called)
+
     def test_list_ready(self, m):
         m.get("http://mock.mock/endpoints", status_code=200, text='{"endpoints": [{"image": "ubuntu", "name": "cake"}]}')
         m.get("http://mock.mock/endpoints/cake", status_code=200, text='{"status": "ready"}')

@@ -28,6 +28,9 @@ class EndpointAPI(object):
                 if response.status_code == 401:
                     click.secho('Warning: Authentication Failed', fg="yellow")
                     exit(1)
+                if response.status_code == 404:
+                    click.secho('Warning: Resource not found', fg="yellow")
+                    exit(1)
                 if response.status_code >= 500:
                     raise EndpointError("Error while communicating with API - {}".format(response.status_code))
                 return response
