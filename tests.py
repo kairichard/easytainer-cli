@@ -52,12 +52,27 @@ class CliTestCase(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertTrue(m.called)
 
-    def test_list(self, m):
+    def test_list_ready(self, m):
         m.get("http://mock.mock/endpoints", status_code=200, text='{"endpoints": [{"image": "ubuntu", "name": "cake"}]}')
         m.get("http://mock.mock/endpoints/cake", status_code=200, text='{"status": "ready"}')
         result = self.invoke("ls")
         self.assertEqual(result.exit_code, 0)
-        self.assertIn("cake", result.output)
+        self.assertIn("http://cake.run.mock.mock/ -> ready", result.output)
+        self.assertTrue(m.called)
+
+    def test_list_unauthenticated(self, m):
+        m.get("http://mock.mock/endpoints", status_code=401, text='Unauthenticated')
+        result = self.invoke("ls")
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn("http://cake.run.mock.mock/ -> ready", result.output)
+        self.assertTrue(m.called)
+
+    def test_list_absent(self, m):
+        m.get("http://mock.mock/endpoints", status_code=200, text='{"endpoints": [{"image": "ubuntu", "name": "cake"}]}')
+        m.get("http://mock.mock/endpoints/cake", status_code=200, text='{"status": "absent"}')
+        result = self.invoke("ls")
+        self.assertEqual(result.exit_code, 0)
+        self.assertIn("http://cake.run.mock.mock/ -> absent", result.output)
         self.assertTrue(m.called)
 
     @patch("endpoint.cli.requests.post", wraps=cli.requests.post)

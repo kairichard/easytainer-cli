@@ -95,7 +95,7 @@ def ls(**kwargs):
     api = EndpointAPI(requests, kwargs.get("auth_token"))
     response = api.list()
     for e in response.json()["endpoints"]:
-        click.secho("{} is {}".format(e["name"], api.get(e["name"]).json()["status"]))
+        click.secho("http://{}.run.{}/ -> {}".format(e["name"], os.environ.get("HW_API"), api.get(e["name"]).json()["status"]))
 
 
 @hw.command()
