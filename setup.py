@@ -16,8 +16,8 @@ from setuptools import find_packages, setup, Command
 NAME = 'hellowhale-cli'
 DESCRIPTION = 'Command line interface for hellowhale.io'
 URL = 'https://gitlab.com/kai.richard.koenig/hellowhale-cli'
-EMAIL = 'me@example.com'
-AUTHOR = 'Kai'
+EMAIL = 'kai.richard.koenig@gmail.com'
+AUTHOR = 'Kai Richard Koenig'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
@@ -80,7 +80,7 @@ setup(
     name=NAME,
     version=about['__version__'],
     description=DESCRIPTION,
-    long_description="not there yet",
+    long_description=DESCRIPTION,
     author=AUTHOR,
     author_email=EMAIL,
     url=URL,
@@ -90,7 +90,7 @@ setup(
 	},
     install_requires=REQUIRED,
     include_package_data=True,
-    license='MIT',
+    license='BSD3',
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
