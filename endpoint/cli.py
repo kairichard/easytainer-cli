@@ -52,6 +52,10 @@ class EndpointAPI(object):
     def delete(self, name, **kwargs):
         return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
 
+    def describe(self, name):
+        url = "http://{}.run.{}/".format(name, os.environ.get("HW_API"))
+        return dict(url=url)
+
     def get_headers(self, **kwargs):
         headers = kwargs.get("headers", self.default_headers.copy())
         defaults = self.default_headers.copy()
@@ -86,7 +90,7 @@ def create(**kwargs):
         exit(1)
 
     if response.status_code == 200:
-        url = "http://{}.run.{}".format(response.json()["runner-name"], os.environ.get("HW_API"))
+        url = api.describe(response.json()["runner-name"])["url"]
         click.secho('Success: Container will be available shortly', bold=True, fg="green")
         click.secho('{}'.format(url))
 
@@ -98,7 +102,8 @@ def ls(**kwargs):
     api = EndpointAPI(requests, kwargs.get("auth_token"))
     response = api.list()
     for e in response.json()["endpoints"]:
-        click.secho("http://{}.run.{}/ -> {}".format(e["name"], os.environ.get("HW_API"), api.get(e["name"]).json()["status"]))
+        url = api.describe(e["name"])["url"]
+        click.secho("{} -> {}".format(url, api.get(e["name"]).json()["status"]))
 
 
 @hw.command()
