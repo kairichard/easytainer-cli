@@ -12,7 +12,7 @@ class EndpointError(click.ClickException):
     pass
 
 if "HW_API" not in os.environ:
-    os.environ["HW_API"] = "hallowhale.io"
+    os.environ["HW_API"] = "hw.kairichardkoenig.de"
 
 class EndpointAPI(object):
     def __init__(self, client, auth):
