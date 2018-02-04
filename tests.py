@@ -63,9 +63,7 @@ class CliTestCase(unittest.TestCase):
     def test_list_unauthenticated(self, m):
         m.get("http://mock.mock/endpoints", status_code=401, text='Unauthenticated')
         result = self.invoke("ls")
-        self.assertEqual(result.exit_code, 0)
-        self.assertIn("http://cake.run.mock.mock/ -> ready", result.output)
-        self.assertTrue(m.called)
+        self.assertEqual(result.exit_code, 1)
 
     def test_list_absent(self, m):
         m.get("http://mock.mock/endpoints", status_code=200, text='{"endpoints": [{"image": "ubuntu", "name": "cake"}]}')

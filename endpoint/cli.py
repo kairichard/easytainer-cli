@@ -4,6 +4,8 @@ import click
 import requests
 import os
 
+from functools import wraps
+
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 class EndpointError(click.ClickException):
@@ -18,29 +20,37 @@ class EndpointAPI(object):
         self.client = client
         self.default_headers = {"X-PA-AUTH-TOKEN": auth}
 
+    def common_error_handler(f):
+        @wraps(f)
+        def func(*a, **kw):
+            try:
+                response = f(*a, **kw)
+                if response.status_code == 401:
+                    click.secho('Warning: Authentication Failed', fg="yellow")
+                    exit(1)
+                if response.status_code >= 500:
+                    raise EndpointError("Error while communicating with API - {}".format(response.status_code))
+                return response
+            except requests.exceptions.ConnectionError as exc:
+                raise EndpointError("Unable to communicate with API")
+        return func
+
+
+    @common_error_handler
     def post(self, data, **kwargs):
-        try:
-            return self.client.post(self.url, data=data, headers=self.get_headers(**kwargs))
-        except requests.exceptions.ConnectionError as exc:
-            raise EndpointError("Unable to communicate with API")
+        return self.client.post(self.url, data=data, headers=self.get_headers(**kwargs))
 
+    @common_error_handler
     def list(self, **kwargs):
-        try:
-            return self.client.get(self.url, headers=self.get_headers(**kwargs))
-        except requests.exceptions.ConnectionError as exc:
-            raise EndpointError("Unable to communicate with API")
+        return self.client.get(self.url, headers=self.get_headers(**kwargs))
 
+    @common_error_handler
     def get(self, name, **kwargs):
-        try:
-            return self.client.get("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
-        except requests.exceptions.ConnectionError as exc:
-            raise EndpointError("Unable to communicate with API")
+        return self.client.get("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
 
+    @common_error_handler
     def delete(self, name, **kwargs):
-        try:
-            return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
-        except requests.exceptions.ConnectionError as exc:
-            raise EndpointError("Unable to communicate with API")
+        return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
 
     def get_headers(self, **kwargs):
         headers = kwargs.get("headers", self.default_headers.copy())
@@ -71,10 +81,6 @@ def create(**kwargs):
     cmd = kwargs.get("command") or ""
     data = dict(image=kwargs.get("image"), env=json.dumps(env, sort_keys=True), command=cmd.strip())
     response = api.post(data=data)
-    if response.status_code == 401:
-        click.secho('Warning: Authentication Failed', fg="yellow")
-        exit(1)
-
     if response.status_code == 429:
         click.secho('Warning: No more endpoints left - either remove or get more by contacting me', fg="yellow")
         exit(1)
@@ -83,9 +89,6 @@ def create(**kwargs):
         url = "http://{}.run.{}".format(response.json()["runner-name"], os.environ.get("HW_API"))
         click.secho('Success: Container will be available shortly', bold=True, fg="green")
         click.secho('{}'.format(url))
-
-    if response.status_code != 200:
-        raise EndPointError("Unable to communicate with API - {}".format(response.status_code))
 
 
 @hw.command()
