@@ -5,6 +5,7 @@ import requests
 import os
 
 from functools import wraps
+from . import __version__
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
