@@ -18,14 +18,14 @@ Usage
 ### Create an endpoint
 ```bash
 # create a new endpoint
-> AUTH_TOKEN=xxxxxxxxx hw create ubuntu:17.10 -c "date"
+> AUTH_TOKEN=xxxxxxxxx et create ubuntu:17.10 -c "date"
 Success: Container will be available shortly
 http://<NAME>.run.easytainer.cloud
 
-> AUTH_TOKEN=xxxxxxxxx hw ls
+> AUTH_TOKEN=xxxxxxxxx et ls
 http://<NAME>.run.easytainer.cloud -> ready
 
-> AUTH_TOKEN=xxxxxxxxx hw remove <NAME>
+> AUTH_TOKEN=xxxxxxxxx et remove <NAME>
 <NAME> will be deleted
 ```
 
