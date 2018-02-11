@@ -57,7 +57,8 @@ class EndpointAPI(object):
         return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
 
     def describe(self, name):
-        url = "http://{}.run.{}/".format(name, os.environ.get("API"))
+        basedomain = ".".join(os.environ.get("API").split(".")[-2:])
+        url = "http://{}.run.{}/".format(name, basedomain)
         return dict(url=url)
 
     def get_headers(self, **kwargs):
