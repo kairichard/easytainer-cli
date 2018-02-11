@@ -17,7 +17,7 @@ from endpoint import cli
 @requests_mock.Mocker()
 class CliTestCase(unittest.TestCase):
     def setUp(self):
-        os.environ["HW_API"] = "mock.mock"
+        os.environ["API"] = "mock.mock"
         super(CliTestCase, self).setUp()
         self.runner = CliRunner()
 

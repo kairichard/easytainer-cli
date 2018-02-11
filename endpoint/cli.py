@@ -11,12 +11,12 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 class EndpointError(click.ClickException):
     pass
 
-if "HW_API" not in os.environ:
-    os.environ["HW_API"] = "hw.kairichardkoenig.de"
+if "API" not in os.environ:
+    os.environ["API"] = "api.easytainer.cloud"
 
 class EndpointAPI(object):
     def __init__(self, client, auth):
-        self.url = "http://{}/{}".format(os.environ.get("HW_API"), "endpoints")
+        self.url = "http://{}/{}".format(os.environ.get("API"), "endpoints")
         self.client = client
         self.default_headers = {"X-PA-AUTH-TOKEN": auth}
 
@@ -56,7 +56,7 @@ class EndpointAPI(object):
         return self.client.delete("{}/{}".format(self.url, name), headers=self.get_headers(**kwargs))
 
     def describe(self, name):
-        url = "http://{}.run.{}/".format(name, os.environ.get("HW_API"))
+        url = "http://{}.run.{}/".format(name, os.environ.get("API"))
         return dict(url=url)
 
     def get_headers(self, **kwargs):
