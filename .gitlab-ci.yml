@@ -44,7 +44,7 @@ install:
   stage: integration
   script:
     - pip install -e .
-    - hw --help
+    - et --help
 
 
 deploy:
