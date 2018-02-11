@@ -1,32 +1,29 @@
-hellowhale/cli
+easytainer/cli
 ========
-This is the CLI for <DOMAIN>.
+This is the CLI for easytainer.cloud.
 Use this to create and remove endpoints via the commandline.
 
 ###### Synopsis
 ```bash
-Usage: hw [OPTIONS] COMMAND [ARGS]...
+Usage: et [OPTIONS] COMMAND [ARGS]...
 ```
 Installing
 -------------
 The cli comes as python package.
 ```bash
-> pip install <>
+> pip install easytainer-cli
 ```
 Usage
 -----------
 ### Create an endpoint
-Its possible to install a Package either locally via the files system or by specifying a remote git repo,
-local git repos also work.
-
 ```bash
 # create a new endpoint
 > AUTH_TOKEN=a2FpOmtvZW5pZw hw create ubuntu:17.10 -c "date"
 Success: Container will be available shortly
-http://<NAME>.run.hw.kairichardkoenig.de
+http://<NAME>.run.easytainer.cloud
 
 > AUTH_TOKEN=a2FpOmtvZW5pZw hw ls
-http://<NAME>.run.hw.kairichardkoenig.de -> ready
+http://<NAME>.run.easytainer.cloud -> ready
 
 > AUTH_TOKEN=a2FpOmtvZW5pZw hw remove <NAME>
 <NAME> will be deleted
@@ -54,7 +51,3 @@ BSD 3
 Attribution
 --------
 Thanks to the people creating and maintaining all the packages and code this project depends and builds up on.
-
-Logo
---------
-by Mark Beltran -> https://www.instagram.com/elhoncho/
