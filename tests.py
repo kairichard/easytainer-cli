@@ -11,7 +11,7 @@ except ImportError:
     from unittest.mock import patch
 
 
-from endpoint import cli
+from cli import cli
 
 
 @requests_mock.Mocker()
@@ -81,40 +81,40 @@ class CliTestCase(unittest.TestCase):
         self.assertIn("http://cake.run.mock.mock/ -> absent", result.output)
         self.assertTrue(m.called)
 
-    @patch("endpoint.cli.requests.post", wraps=cli.requests.post)
+    @patch("cli.cli.requests.post", wraps=cli.requests.post)
     def test_create_with_env(self, m, r):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
         result = self.invoke("create", "ubuntu", "-e TEST=True", "-e DEBUG=False")
         r.assert_called_with('http://mock.mock/endpoints', data={'image': 'ubuntu', 'env': '{"DEBUG": "False", "TEST": "True"}'}, headers={'X-PA-AUTH-TOKEN': '123'})
         self.assertIn("http://something.run.mock.mock", result.output)
 
-    @patch("endpoint.cli.requests.post", wraps=cli.requests.post)
+    @patch("cli.cli.requests.post", wraps=cli.requests.post)
     def test_create_with_env(self, m, r):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
         result = self.invoke("create", "ubuntu", "-c bash")
         r.assert_called_with('http://mock.mock/endpoints', data={'image': 'ubuntu', 'env': '{}', 'command': 'bash'}, headers={'X-PA-AUTH-TOKEN': '123'})
         self.assertIn("http://something.run.mock.mock", result.output)
 
-    @patch("endpoint.cli.EndpointAPI", wraps=cli.EndpointAPI)
+    @patch("cli.cli.EndpointAPI", wraps=cli.EndpointAPI)
     def test_create_uses_auth_token(self, m, e):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
         result = self.invoke("create", "ubuntu", "--auth-token=123")
         e.assert_called_with(requests, "123")
 
-    @patch("endpoint.cli.EndpointAPI", wraps=cli.EndpointAPI)
+    @patch("cli.cli.EndpointAPI", wraps=cli.EndpointAPI)
     def test_delete_uses_auth_token(self, m, e):
         m.delete("http://mock.mock/endpoints/ubuntu", status_code=200)
         result = self.invoke("remove", "ubuntu", "--auth-token=123")
         e.assert_called_with(requests, "123")
 
-    @patch("endpoint.cli.EndpointAPI", wraps=cli.EndpointAPI)
+    @patch("cli.cli.EndpointAPI", wraps=cli.EndpointAPI)
     def test_create_uses_auth_token__env(self, m, e):
         m.post("http://mock.mock/endpoints", status_code=200, text='{"runner-name": "something"}')
         os.environ["AUTH_TOKEN"] = "123"
         result = self.invoke("create", "ubuntu")
         e.assert_called_with(requests, "123")
 
-    @patch("endpoint.cli.EndpointAPI", wraps=cli.EndpointAPI)
+    @patch("cli.cli.EndpointAPI", wraps=cli.EndpointAPI)
     def test_delete_uses_auth_token__env(self, m, e):
         m.delete("http://mock.mock/endpoints/ubuntu", status_code=200)
         os.environ["AUTH_TOKEN"] = "123"

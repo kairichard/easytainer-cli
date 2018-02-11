@@ -38,7 +38,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # Load the package's __version__.py module as a dictionary.
 about = {}
-with open(os.path.join(here, "endpoint", '__init__.py')) as f:
+with open(os.path.join(here, "cli", '__init__.py')) as f:
     exec(f.read(), about)
 
 
@@ -86,7 +86,7 @@ setup(
     url=URL,
     packages=find_packages(exclude=('tests',)),
 	entry_points={
-        'console_scripts': ['et=endpoint.cli:cli'],
+        'console_scripts': ['et=cli.cli:cli'],
 	},
     install_requires=REQUIRED,
     include_package_data=True,
