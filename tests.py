@@ -23,7 +23,7 @@ class CliTestCase(unittest.TestCase):
 
     def invoke(self, *args):
         return self.runner.invoke(
-            cli.hw, args, catch_exceptions=False)
+            cli.cli, args, catch_exceptions=False)
 
     def test_unauthenticated(self, m):
         m.post("http://mock.mock/endpoints", status_code=401)

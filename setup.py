@@ -13,9 +13,9 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'hellowhale-cli'
-DESCRIPTION = 'Command line interface for hellowhale.io'
-URL = 'https://gitlab.com/kai.richard.koenig/hellowhale-cli'
+NAME = 'easytainer-cli'
+DESCRIPTION = 'Command line interface for easytainer.cloud'
+URL = 'https://gitlab.com/kai.richard.koenig/easytainer-cli'
 EMAIL = 'kai.richard.koenig@gmail.com'
 AUTHOR = 'Kai Richard Koenig'
 
@@ -86,7 +86,7 @@ setup(
     url=URL,
     packages=find_packages(exclude=('tests',)),
 	entry_points={
-        'console_scripts': ['hw=endpoint.cli:hw'],
+        'console_scripts': ['et=endpoint.cli:cli'],
 	},
     install_requires=REQUIRED,
     include_package_data=True,

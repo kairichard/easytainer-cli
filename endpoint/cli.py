@@ -69,15 +69,15 @@ class EndpointAPI(object):
 auth = click.option('--auth-token', envvar="AUTH_TOKEN", default="NONE", help="Authentication token to access your account")
 
 @click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(version='0.0.1')
-def hw():
+@click.version_option(version=__version__)
+def cli():
     """
     <NAME> - Run containers as a Funtion - CaaF
     """
     pass
 
 
-@hw.command()
+@cli.command()
 @auth
 @click.option('--env', '-e', multiple=True, help="Environment variables passed to the container - multiple values possible")
 @click.option('--command', '-c', help="Set the command to be run with this image")
@@ -99,7 +99,7 @@ def create(**kwargs):
         click.secho('{}'.format(url))
 
 
-@hw.command()
+@cli.command()
 @auth
 def ls(**kwargs):
     """ List all endpoints"""
@@ -110,7 +110,7 @@ def ls(**kwargs):
         click.secho("{} -> {}".format(url, api.get(e["name"]).json()["status"]))
 
 
-@hw.command()
+@cli.command()
 @auth
 @click.argument('name')#, help="The name of your endpoint")
 def remove(**kwargs):
@@ -122,4 +122,4 @@ def remove(**kwargs):
 
 
 if __name__ == '__main__':
-    hw()
+    cli()
