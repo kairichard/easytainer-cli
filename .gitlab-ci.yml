@@ -49,6 +49,7 @@ install:
 
 deploy:
   stage: deploy
+  image: python:slim
   script:
     - pip install twine
     - python setup.py upload
