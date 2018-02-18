@@ -114,7 +114,7 @@ def ls(**kwargs):
 @cli.command()
 @auth
 @click.argument('name')#, help="The name of your endpoint")
-def remove(**kwargs):
+def rm(**kwargs):
     """ Permanently remove an endpoint by <NAME>"""
     api = EndpointAPI(requests, kwargs.get("auth_token"))
     name = kwargs.get("name")

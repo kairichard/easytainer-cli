@@ -25,7 +25,7 @@ http://<NAME>.run.easytainer.cloud
 > AUTH_TOKEN=xxxxxxxxx et ls
 http://<NAME>.run.easytainer.cloud -> ready
 
-> AUTH_TOKEN=xxxxxxxxx et remove <NAME>
+> AUTH_TOKEN=xxxxxxxxx et rm <NAME>
 <NAME> will be deleted
 ```
 

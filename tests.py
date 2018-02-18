@@ -48,14 +48,14 @@ class CliTestCase(unittest.TestCase):
 
     def test_delete(self, m):
         m.delete("http://mock.mock/endpoints/ice-cream", status_code=200)
-        result = self.invoke("remove", "ice-cream")
+        result = self.invoke("rm", "ice-cream")
         self.assertEqual(result.exit_code, 0)
         self.assertIn("ice-cream will be deleted", result.output)
         self.assertTrue(m.called)
 
     def test_delete_non_existant_endpoint(self, m):
         m.delete("http://mock.mock/endpoints/ice-cream", status_code=404)
-        result = self.invoke("remove", "ice-cream")
+        result = self.invoke("rm", "ice-cream")
         self.assertEqual(result.exit_code, 1)
         self.assertIn("Warning: Resource not found", result.output)
         self.assertTrue(m.called)
@@ -104,7 +104,7 @@ class CliTestCase(unittest.TestCase):
     @patch("cli.cli.EndpointAPI", wraps=cli.EndpointAPI)
     def test_delete_uses_auth_token(self, m, e):
         m.delete("http://mock.mock/endpoints/ubuntu", status_code=200)
-        result = self.invoke("remove", "ubuntu", "--auth-token=123")
+        result = self.invoke("rm", "ubuntu", "--auth-token=123")
         e.assert_called_with(requests, "123")
 
     @patch("cli.cli.EndpointAPI", wraps=cli.EndpointAPI)
@@ -118,7 +118,7 @@ class CliTestCase(unittest.TestCase):
     def test_delete_uses_auth_token__env(self, m, e):
         m.delete("http://mock.mock/endpoints/ubuntu", status_code=200)
         os.environ["AUTH_TOKEN"] = "123"
-        result = self.invoke("remove", "ubuntu")
+        result = self.invoke("rm", "ubuntu")
         e.assert_called_with(requests, "123")
 
 
